@@ -16,7 +16,7 @@ services:
   frontend:
     restart: always
     build: ./platform-frontend
-    image: mojofy_backend
+    image: mojofy_frontend
     ports:
       - "35729:35729" # livereload
     volumes:
