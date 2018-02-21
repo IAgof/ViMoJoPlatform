@@ -1,0 +1,27 @@
+# compose file for overriding general docker-compose.yml for development purpose
+version: '2'
+services:
+  backend:
+    restart: always
+    image: mojofy_backend
+    volumes:
+      - ./MoJoFy:/app/src
+    environment:
+      - LOCAL_CLOUD_STORAGE_HOST=http://local_cloud_storage # set up an entry in your /etc/hosts
+      - FRONTEND_URL=http://localhost:8080
+    env_file: .env_backend.dev
+    command: npm run-script dev
+#    command: node -e 'console.log(process.env);'
+
+  frontend:
+    restart: always
+    build: ./platform-frontend
+    image: mojofy_backend
+    ports:
+      - "35729:35729" # livereload
+    volumes:
+      - ./platform-frontend:/app/src
+    environment:
+      - BACKEND_API_URL=http://backend:3000 # set up an entry in your /etc/hosts
+#    env_file: .env_frontend.dev
+    command: npm run-script dev

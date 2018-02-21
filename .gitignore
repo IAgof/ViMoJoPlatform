@@ -1,0 +1,6 @@
+.idea
+
+# dotenv files
+.env*
+
+scratchpad.txt
