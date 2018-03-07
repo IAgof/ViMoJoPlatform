@@ -27,3 +27,16 @@ services:
       - BACKEND_API_URL=http://backend:3000 # set up an entry in your /etc/hosts
 #    env_file: .env_frontend.dev
     command: npm run-script dev
+
+  # "Usage docker-compose -f ... run --rm frontend-gulp-runner [gulptask]"
+  frontend-gulp-runner:
+    build: ./platform-frontend
+    image: mojofy_frontend
+    volumes:
+      - ./platform-frontend:/app/src
+    working_dir: /app
+    environment:
+      - BACKEND_API_URL=http://backend:3000 # set up an entry in your /etc/hosts
+#    env_file: .env_frontend.dev
+    entrypoint: node_modules/gulp/bin/gulp.js --gulpfile /app/src/gulpfile.js
+    command: "build"

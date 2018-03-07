@@ -26,6 +26,7 @@ services:
       - 4200:4200
     volumes:
       - /tmp:/tmp
+      - ./platform-frontend:/app/src
     environment:
       - DISPLAY=:0
       - CHROME_BIN=/usr/bin/display-chromium
