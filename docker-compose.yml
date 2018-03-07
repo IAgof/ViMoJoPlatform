@@ -29,6 +29,7 @@ services:
 #      - BACKEND_GCLOUD_STORAGE_BUCKET
 #      - ELASTIC_USER
 #      - ELASTIC_PASS
+#      - FLAVOUR
     env_file: .env_backend.prod
     command: npm start
 
