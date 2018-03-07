@@ -9,6 +9,8 @@ services:
     environment:
       - LOCAL_CLOUD_STORAGE_HOST=http://local_cloud_storage # set up an entry in your /etc/hosts
       - FRONTEND_URL=http://localhost:8080
+      - ELASTIC_USER=elastic  # Default elastic user
+      - ELASTIC_PASS=changeme # Default elastic pass
     env_file: .env_backend.dev
     command: npm run-script dev
 #    command: node -e 'console.log(process.env);'
