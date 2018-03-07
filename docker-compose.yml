@@ -6,6 +6,8 @@ services:
     image: mojofy_backend:${BACKEND_TAG}
     depends_on:
       - elasticsearch
+    links:
+      - elasticsearch
     environment:
       - NODE_ENV=production
       - BACKEND_WINSTON_LOG_LEVEL=info
@@ -13,7 +15,7 @@ services:
       - ELASTIC_INDEX=test
       - ELASTIC_HOST=elasticsearch
       - ELASTIC_PORT=9200
-      - ELASTIC_LOG=info
+      - ELASTIC_LOG=debug
 #      - PORT
 #      - JWT_SECRET
 #      - JWT_ISSUER
@@ -34,21 +36,28 @@ services:
   elasticsearch:
     restart: always
     image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
-    expose:
-      - "9300"
-      - "9200"
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65536
+    mem_limit: 1g
     ports:
       - "9300:9300"
       - "9200:9200"
     environment:
       - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # TODO: check appropiate limmits here
+#    env_file: .env_elastic.prod
 
-  frontend:
+
+  frontend: # TODO: in production mode, we'll want just to build frontend and serve files using nginx or similar
     restart: always
     build: ./platform-frontend
     image: mojofy_frontend:${FRONTEND_TAG}
-    expose:
-      - "8080"
     ports:
       - "8080:8080"
     depends_on:
@@ -73,3 +82,7 @@ services:
 #      - web
 #    links:
 #      - web:web
+
+volumes:
+  esdata1:
+    driver: local

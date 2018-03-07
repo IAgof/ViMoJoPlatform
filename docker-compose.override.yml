@@ -31,6 +31,11 @@ services:
     command: npm start
 #    command: node -e 'console.log(process.env);'
 
+  elasticsearch:
+      expose: # This will make them accessible through docker host
+        - "9300"
+        - "9200"
+
   local_cloud_storage:
     restart: always
     build: ./local_cloud_storage/
@@ -53,9 +58,11 @@ services:
     image: mojofy_frontend
     depends_on:
       - backend
+    expose:
+      - "8080" # This will make it accessible through docker host
     environment:
       - NODE_ENV=development
-      - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+      - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}/api/v1
       - FRONTEND_HOST=0.0.0.0
       - FRONTEND_PORT=8080
 #    env_file: .env_frontend.dev
