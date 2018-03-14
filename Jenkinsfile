@@ -1,5 +1,5 @@
 pipeline {
-    agent { node { label 'docker-ci' } }
+//    agent { node { label 'docker-ci' } }
 
     def app
     def base_image = 'm4n/mojofy_frontend'
