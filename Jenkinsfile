@@ -68,7 +68,7 @@ pipeline {
                     archiveArtifacts artifacts: 'reports/videos/**/*.mov', fingerprint: true
                     archiveArtifacts artifacts: 'reports/videos/**/*.srt', fingerprint: true
                     archiveArtifacts artifacts: 'reports/logs/**/*.txt', fingerprint: true
-                    zip zipFile: 'screenshotsReport.zip' archive: true dir: 'reports/screenshots/'
+                    zip zipFile: 'screenshotsReport.zip', archive: true, dir: 'reports/screenshots/'
                 }
             }
         }
