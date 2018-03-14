@@ -1,8 +1,6 @@
 pipeline {
-//    agent { node { label 'docker-ci' } }
+    agent { node { label 'docker-ci' } }
 
-    def app
-    def base_image = 'm4n/mojofy_frontend'
     environment {
         DOCKER_MACHINE_IP = ''
         COMPOSE_CHAIN = "-f docker-compose.yml -f docker-compose.override.yml -f jenkins-vars.yml"
