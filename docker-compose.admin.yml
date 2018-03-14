@@ -35,6 +35,27 @@ services:
       && ../node_modules/karma/bin/karma start --watch true --single-run false"
 
 
+  e2e-runner:
+    build:
+      context: .
+      dockerfile: platform-tests/protractor/Dockerfile
+    shm_size: 1g
+    environment:
+      - DISPLAY=:1
+    links:
+      - frontend:frontend
+    volumes:
+      - ./platform-tests/protractor/:/project
+      - ./reports:/tmp/reports
+
+#  casper-runner:
+#    build: ./platform-tests/casper
+#    environment:
+#      - FRONTEND_IP=frontend
+#    volumes:
+#      - ./platform-tests/casper:/home/casperjs-tests
+##    entrypoint: pwd
+#    command: bash -c "casperjs test /home/casperjs-tests/*.js --xunit=ftestsreport.xml --log-level=debug;"
 
 #  pip-installer:
 #    build: ./
