@@ -37,7 +37,7 @@ describe ('User auth', function() {
 		let errors = element.all(by.css('.credentials-errors li'));
 		expect(errors.count()).toBe(0);
 
-		browser.sleep(2000);
+		browser.sleep(5000);
 		expect(browser.getCurrentUrl()).toEqual(baseUrl + '/gallery');
 	});
 
@@ -59,7 +59,7 @@ describe ('User auth', function() {
 		expect(loginButton.isDisplayed()).toBeTruthy();
 		loginButton.click();
 
-		browser.sleep(2000);
+		browser.sleep(5000);
 		expect(browser.getCurrentUrl()).toEqual(baseUrl + '/gallery');
 	});
 
