@@ -33,11 +33,11 @@ pipeline {
                         --amazonec2-secret-key ${AWS_SECRET_ACCESS_KEY} --amazonec2-region us-east-1  \
                         --amazonec2-zone a --amazonec2-vpc-id vpc-bc023cd8 --amazonec2-security-group mojofy-testing \
                         --amazonec2-instance-type t2.medium ${DOCKER_MACHINE_NAME}"
-                    DOCKER_MACHINE_IP = sh (
-                        script: "docker-machine ip ${DOCKER_MACHINE_NAME}",
-                        returnStdout: true
-                        ).trim()
                 }
+                DOCKER_MACHINE_IP = sh (
+                    script: "docker-machine ip ${DOCKER_MACHINE_NAME}",
+                    returnStdout: true
+                    ).trim()
 
             }
         }
