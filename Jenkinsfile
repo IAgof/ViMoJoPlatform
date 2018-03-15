@@ -34,10 +34,10 @@ pipeline {
                         --amazonec2-zone a --amazonec2-vpc-id vpc-bc023cd8 --amazonec2-security-group mojofy-testing \
                         --amazonec2-instance-type t2.medium ${DOCKER_MACHINE_NAME}"
                 }
-                DOCKER_MACHINE_IP = sh (
-                    script: "docker-machine ip ${DOCKER_MACHINE_NAME}",
-                    returnStdout: true
-                    ).trim()
+                //DOCKER_MACHINE_IP = sh (
+                //    script: "docker-machine ip ${DOCKER_MACHINE_NAME}",
+                //    returnStdout: true
+                //    ).trim()
 
             }
         }
@@ -68,7 +68,7 @@ pipeline {
                     archiveArtifacts artifacts: 'reports/videos/**/*.mov', fingerprint: true
                     archiveArtifacts artifacts: 'reports/videos/**/*.srt', fingerprint: true
                     archiveArtifacts artifacts: 'reports/logs/**/*.txt', fingerprint: true
-                    zip zipFile: 'screenshotsReport.zip', archive: true, dir: 'reports/screenshots/'
+                    //zip zipFile: 'screenshotsReport.zip', archive: true, dir: 'reports/screenshots/'
                 }
             }
         }
