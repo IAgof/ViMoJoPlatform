@@ -5,8 +5,8 @@ pipeline {
     environment {
         DOCKER_MACHINE_IP = ""
         COMPOSE_CHAIN = "-f docker-compose.yml -f docker-compose.override.yml -f jenkins-vars.yml"
-        COMPOSE_PROJECT_NAME = "${env.JOB_NAME}_${env.BUILD_NUMBER}"
-        DOCKER_MACHINE_NAME = "mojofy.jenkins.aws.t2medium_${env.COMPOSE_PROJECT_NAME}"
+        COMPOSE_PROJECT_NAME = "mojofy${env.BUILD_NUMBER}"
+        DOCKER_MACHINE_NAME = "mojofy.jenkins.aws.t2medium-${env.COMPOSE_PROJECT_NAME}"
     }
 
 
@@ -35,12 +35,6 @@ pipeline {
                         --amazonec2-secret-key ${AWS_SECRET_ACCESS_KEY} --amazonec2-region us-east-1  \
                         --amazonec2-zone a --amazonec2-vpc-id vpc-bc023cd8 --amazonec2-security-group mojofy-testing \
                         --amazonec2-instance-type t2.medium ${DOCKER_MACHINE_NAME}"
-                    script {
-                        env.DOCKER_MACHINE_IP = sh (
-                            script: "docker-machine ip ${env.DOCKER_MACHINE_NAME}",
-                            returnStdout: true
-                            ).trim()
-                    }
                 }
 
             }
@@ -49,8 +43,9 @@ pipeline {
         stage("Build and start test composition") {
             steps {
                 echo "starting composition"
-                withEnv(['FLAVOUR=vimojo', "DOCKER_MACHINE_IP=${env.DOCKER_MACHINE_IP}"]) {
+                withEnv(['FLAVOUR=vimojo']) {
                     sh """
+                        export DOCKER_MACHINE_IP=\$(docker-machine ip \$DOCKER_MACHINE_NAME)
                         eval \$(docker-machine env --shell bash \$DOCKER_MACHINE_NAME)
                         docker-compose \$COMPOSE_CHAIN build
                         docker-compose \$COMPOSE_CHAIN up -d
@@ -61,10 +56,9 @@ pipeline {
 
         stage("Run tests") {
             steps {
-                //sh "mkdir reports"
-                //sh "chmod 1777 reports"
-                withEnv(['FLAVOUR=vimojo', "DOCKER_MACHINE_IP=${env.DOCKER_MACHINE_IP}"]) {
+                withEnv(['FLAVOUR=vimojo']) {
                     sh """
+                        export DOCKER_MACHINE_IP=\$(docker-machine ip \$DOCKER_MACHINE_NAME)
                         eval \$(docker-machine env --shell bash \$DOCKER_MACHINE_NAME)
                         docker-compose \$COMPOSE_CHAIN -f docker-compose.admin.yml run e2e-runner
                         docker cp \${COMPOSE_PROJECT_NAME}_e2e-runner_run_1:/tmp/reports .
@@ -79,7 +73,8 @@ pipeline {
                     archiveArtifacts artifacts: 'reports/videos/**/*.mov', fingerprint: true
                     archiveArtifacts artifacts: 'reports/videos/**/*.srt', fingerprint: true
                     archiveArtifacts artifacts: 'reports/logs/**/*.txt', fingerprint: true
-                    //zip zipFile: 'screenshotsReport.zip', archive: true, dir: 'reports/screenshots/'
+                    zip zipFile: 'screenshotsReport.zip', archive: true, dir: 'reports/screenshots/'
+                    sh "rm -rf reports"
                 }
             }
         }
