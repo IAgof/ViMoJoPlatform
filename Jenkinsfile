@@ -1,8 +1,9 @@
 pipeline {
-    agent { node { label 'docker-ci' } }
+    //agent { node { label 'docker-ci' } }
+    agent any
 
     environment {
-        DOCKER_MACHINE_IP = ''
+        DOCKER_MACHINE_IP = ""
         COMPOSE_CHAIN = "-f docker-compose.yml -f docker-compose.override.yml -f jenkins-vars.yml"
         DOCKER_MACHINE_NAME = "mojofy.jenkins.aws.t2medium"
     }
@@ -33,22 +34,28 @@ pipeline {
                         --amazonec2-secret-key ${AWS_SECRET_ACCESS_KEY} --amazonec2-region us-east-1  \
                         --amazonec2-zone a --amazonec2-vpc-id vpc-bc023cd8 --amazonec2-security-group mojofy-testing \
                         --amazonec2-instance-type t2.medium ${DOCKER_MACHINE_NAME}"
+                    script {
+                        env.DOCKER_MACHINE_IP = sh (
+                            script: "docker-machine ip ${env.DOCKER_MACHINE_NAME}",
+                            returnStdout: true
+                            ).trim()
+                    }
                 }
-                //DOCKER_MACHINE_IP = sh (
-                //    script: "docker-machine ip ${DOCKER_MACHINE_NAME}",
-                //    returnStdout: true
-                //    ).trim()
 
             }
         }
 
-        stage("Build and start test image") {
+        stage("Build and start test composition") {
             steps {
-                withEnv(["FLAVOUR=vimojo DOCKER_MACHINE_IP=${DOCKER_MACHINE_IP}"]) {
+                echo "starting composition"
+                withEnv(['FLAVOUR=vimojo', "DOCKER_MACHINE_IP=${env.DOCKER_MACHINE_IP}"]) {
                     //DOCKER_MACHINE_IP=172.31.59.47
                     //DOCKER_MACHINE_IP=`docker-machine ip ${DOCKER_MACHINE_NAME}`
-                    sh "docker-compose ${COMPOSE_CHAIN} build"
-                    sh "docker-compose ${COMPOSE_CHAIN} up -d"
+                    sh """
+                        eval \$(docker-machine env --shell bash \$DOCKER_MACHINE_NAME)
+                        docker-compose \$COMPOSE_CHAIN build
+                        docker-compose \$COMPOSE_CHAIN up -d
+                    """
                 }
             }
         }
@@ -57,8 +64,11 @@ pipeline {
             steps {
                 sh "mkdir reports"
                 sh "chmod 1777 reports"
-                withEnv(["FLAVOUR=vimojo DOCKER_MACHINE_IP=${DOCKER_MACHINE_IP}"]) {
-                    sh "docker-compose ${COMPOSE_CHAIN} -f docker-compose.admin.yml run --rm e2e-runner"
+                withEnv(['FLAVOUR=vimojo', "DOCKER_MACHINE_IP=${env.DOCKER_MACHINE_IP}"]) {
+                    sh """
+                        eval \$(docker-machine env --shell bash \$DOCKER_MACHINE_NAME)
+                        docker-compose \$COMPOSE_CHAIN -f docker-compose.admin.yml run --rm e2e-runner
+                    """
                 }
             }
 
@@ -78,7 +88,7 @@ pipeline {
     post {
       always {
           sh "docker-compose down || true"
-          sh "docker-machine rm ${DOCKER_MACHINE_NAME}"
+          sh "docker-machine rm -y ${DOCKER_MACHINE_NAME}"
       }
     }
 
