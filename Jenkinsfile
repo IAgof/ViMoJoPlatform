@@ -75,6 +75,7 @@ pipeline {
                     archiveArtifacts artifacts: 'reports/logs/**/*.txt', fingerprint: true
                     zip zipFile: 'screenshotsReport.zip', archive: true, dir: 'reports/screenshots/'
                     sh "rm -rf reports"
+                    sh "rm screenshotsReport.zip"
                 }
             }
         }
