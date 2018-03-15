@@ -12,3 +12,4 @@ RUN npm install jasmine-spec-reporter
 RUN npm install jasmine-reporters
 RUN npm install jasmine-spec-name-patch
 RUN npm install protractor-jasmine2-screenshot-reporter
+COPY ./platform-tests/protractor/* /project/

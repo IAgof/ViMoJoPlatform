@@ -5,7 +5,8 @@ pipeline {
     environment {
         DOCKER_MACHINE_IP = ""
         COMPOSE_CHAIN = "-f docker-compose.yml -f docker-compose.override.yml -f jenkins-vars.yml"
-        DOCKER_MACHINE_NAME = "mojofy.jenkins.aws.t2medium"
+        COMPOSE_PROJECT_NAME = "${env.JOB_NAME}_${env.BUILD_NUMBER}"
+        DOCKER_MACHINE_NAME = "mojofy.jenkins.aws.t2medium_${env.COMPOSE_PROJECT_NAME}"
     }
 
 
@@ -49,8 +50,6 @@ pipeline {
             steps {
                 echo "starting composition"
                 withEnv(['FLAVOUR=vimojo', "DOCKER_MACHINE_IP=${env.DOCKER_MACHINE_IP}"]) {
-                    //DOCKER_MACHINE_IP=172.31.59.47
-                    //DOCKER_MACHINE_IP=`docker-machine ip ${DOCKER_MACHINE_NAME}`
                     sh """
                         eval \$(docker-machine env --shell bash \$DOCKER_MACHINE_NAME)
                         docker-compose \$COMPOSE_CHAIN build
@@ -62,12 +61,14 @@ pipeline {
 
         stage("Run tests") {
             steps {
-                sh "mkdir reports"
-                sh "chmod 1777 reports"
+                //sh "mkdir reports"
+                //sh "chmod 1777 reports"
                 withEnv(['FLAVOUR=vimojo', "DOCKER_MACHINE_IP=${env.DOCKER_MACHINE_IP}"]) {
                     sh """
                         eval \$(docker-machine env --shell bash \$DOCKER_MACHINE_NAME)
-                        docker-compose \$COMPOSE_CHAIN -f docker-compose.admin.yml run --rm e2e-runner
+                        docker-compose \$COMPOSE_CHAIN -f docker-compose.admin.yml run e2e-runner
+                        docker cp \${COMPOSE_PROJECT_NAME}_e2e-runner_run_1:/tmp/reports .
+                        docker rm \${COMPOSE_PROJECT_NAME}_e2e-runner_run_1
                     """
                 }
             }

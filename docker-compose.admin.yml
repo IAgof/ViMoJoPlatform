@@ -44,6 +44,16 @@ services:
       - DISPLAY=:1
     links:
       - frontend:frontend
+
+  e2e-runner-dev:
+    build:
+      context: .
+      dockerfile: platform-tests/protractor/Dockerfile
+    shm_size: 1g
+    environment:
+      - DISPLAY=:1
+    links:
+      - frontend:frontend
     volumes:
       - ./platform-tests/protractor/:/project
       - ./reports:/tmp/reports
