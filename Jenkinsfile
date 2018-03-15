@@ -10,13 +10,15 @@ pipeline {
 
     stages {
         stage('Clone repository') {
-              checkout([
+            steps {
+                checkout([
                       $class: 'GitSCM',
                       branches: scm.branches,
                       doGenerateSubmoduleConfigurations: true,
                       extensions: scm.extensions + [[$class: 'SubmoduleOption', parentCredentials: true]],
                       userRemoteConfigs: scm.userRemoteConfigs
-              ])
+                ])
+            }
         }
 
         stage("Create docker-machine") {
