@@ -3,4 +3,6 @@
 # dotenv files
 .env*
 
+reports/
+
 scratchpad.txt
