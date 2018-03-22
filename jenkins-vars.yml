@@ -1,0 +1,42 @@
+version: '2'
+services:
+  backend:
+    environment:
+      - NODE_ENV=production
+      - BACKEND_WINSTON_LOG_LEVEL=info
+      - BACKEND_CLOUD_STORAGE_TYPE=gcloud
+      - ELASTIC_INDEX=test
+      - ELASTIC_HOST=elasticsearch
+      - ELASTIC_PORT=9200
+      - ELASTIC_LOG=debug
+      - PORT=3000
+      - JWT_SECRET=jwtsecret
+      - JWT_ISSUER=jwtissuer
+      - JWT_TOKEN_EXPIRATION=1y
+#      - SENDGRID_API_KEY
+#      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER
+      - BACKEND_EMAIL_NOTIFICATIONS_SENDER=info@videona.com
+      - BACKEND_DATASTORE_NAMESPACE=DSNS
+      - BACKEND_GOOGLE_CLOUD_PROJECT_ID=vimojo-plat
+#      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
+#      - BACKEND_GCLOUD_STORAGE_BUCKET
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASS=changeme
+      - FLAVOUR=vimojo
+
+
+  frontend:
+    build:
+      context: ./platform-frontend
+      args:
+        - NODE_ENV=development
+        - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+        - FRONTEND_HOST=0.0.0.0
+        - FRONTEND_PORT=8080
+        - FLAVOUR=vimojo
+    environment:
+      - NODE_ENV=development
+      - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+      - FRONTEND_HOST=0.0.0.0
+      - FRONTEND_PORT=8080
+      - FLAVOUR=vimojo
