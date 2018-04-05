@@ -62,6 +62,7 @@ services:
             - FRONTEND_HOST=0.0.0.0
             - FRONTEND_PORT=8080
             - FLAVOUR # set the flavour in your environment
+            - GMAPS_API_KEY=GmapsApiKey
     image: mojofy_frontend
     depends_on:
       - backend
