@@ -58,6 +58,84 @@ services:
       - ./platform-tests/protractor/:/project
       - ./reports:/tmp/reports
 
+  backend-testrunner:
+    build: ./MoJoFy
+    volumes:
+      - ./MoJoFy:/app/src
+    environment:
+      - NODE_ENV=test
+      - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
+      - ELASTIC_INDEX=test
+      - ELASTIC_HOST=elasticsearch-test
+      - ELASTIC_PORT=9200
+      - ELASTIC_LOG=debug
+      - BACKEND_WINSTON_LOG_LEVEL=debug
+      - NODE_ENV=development
+      - DEBUG=express:*
+      - FRONTEND_URL=http://${DOCKER_MACHINE_IP}:8080
+      - BACKEND_CLOUD_STORAGE_TYPE=local_cloud
+      - LOCAL_CLOUD_STORAGE_HOST=http://${DOCKER_MACHINE_IP}
+      - DATASTORE_EMULATOR_HOST=http://datastore-test:8081
+      - BACKEND_DATASTORE_NAMESPACE=VIMOJO_DEV
+      - BACKEND_GOOGLE_CLOUD_PROJECT_ID=videona-test
+#      - PORT
+#      - JWT_SECRET
+#      - JWT_ISSUER
+#      - JWT_TOKEN_EXPIRATION
+#      - SENDGRID_API_KEY
+#      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER
+#      - BACKEND_EMAIL_NOTIFICATIONS_SENDER
+#      - BACKEND_DATASTORE_NAMESPACE
+#      - BACKEND_GOOGLE_CLOUD_PROJECT_ID
+#      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
+#      - BACKEND_GCLOUD_STORAGE_BUCKET
+#      - ELASTIC_USER
+#      - ELASTIC_PASS
+#      - FLAVOUR
+    depends_on:
+      - elasticsearch
+      - datastore-test
+    links:
+      - elasticsearch
+      - datastore-test
+    entrypoint: node_modules/mocha/bin/mocha --recursive
+    command: src/test/
+
+  datastore-test:
+    restart: always
+    image: singularities/datastore-emulator
+    environment:
+      - DATASTORE_LISTEN_ADDRESS=0.0.0.0:8081
+      - DATASTORE_PROJECT_ID=videona-test
+    # we don't want persistence here
+#    volumes:
+#      - datastore-test-data:/opt/data
+    expose:
+      - 8081
+
+  elasticsearch-test:
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+    # we don't want persistence here
+#    volumes:
+#      - esdata1:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65536
+# TODO(jliarte): explore if we can define a ES service with less memory for testing
+    mem_limit: 1g
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # TODO: check appropiate limmits here
+#    env_file: .env_elastic.prod
+
+
 #  casper-runner:
 #    build: ./platform-tests/casper
 #    environment:
