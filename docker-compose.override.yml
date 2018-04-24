@@ -12,7 +12,7 @@ services:
     links:
       - datastore:datastore
     volumes_from:
-      - local_cloud_storage_data
+      - local_cloud_storage
     environment:
       - BACKEND_WINSTON_LOG_LEVEL=debug
       - NODE_ENV=development
@@ -41,16 +41,8 @@ services:
     build: ./local_cloud_storage/
     ports:
       - "80:80"
-    volumes_from:
-      - local_cloud_storage_data:ro
-    links:
-      - backend:backend
-
-  local_cloud_storage_data:
-    build: ./local_cloud_storage/
     volumes:
-      - /app/uploads
-    command: "true"
+      - video-uploads:/app/uploads
 
   frontend:
     restart: always
@@ -83,13 +75,15 @@ services:
     environment:
       - DATASTORE_LISTEN_ADDRESS=0.0.0.0:8081
       - DATASTORE_PROJECT_ID=videona-test
-    volumes_from:
-      - datastore-data
+    volumes:
+      - datastore-data:/opt/data
     expose:
       - 8081
 
+volumes:
+  esdata1:
+    driver: local
+  video-uploads:
+    driver: local
   datastore-data:
-    image: singularities/datastore-emulator
-    volumes:
-      - /opt/data
-    command: "true"
+    driver: local
