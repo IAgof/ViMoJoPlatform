@@ -1,0 +1,89 @@
+version: '2'
+services:
+  frontend-testrunner:
+    build:
+      context: ./platform-frontend
+      dockerfile: ./Dockerfile.test
+    ports:
+      - 4200:4200
+    environment:
+#      - CHROME_BIN=/usr/bin/chromium-browser
+      - NODE_ENV=production
+      - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+    working_dir: /app/src
+    command: bash -c "../node_modules/gulp/bin/gulp.js build
+      && ../node_modules/karma/bin/karma start --watch false --single-run true"
+
+# Instead of running on the hidden Xvfb, you can also run the provided Chrome on a real display.
+#  To do so you need to export the display, bind the /tmp sockets, and select the provided display-chromium
+#  startup wrapper via the CHROME_BIN environment variable:
+#  docker run -e DISPLAY=:0 -e CHROME_BIN=/usr/bin/display-chromium -u $(id -u) --rm -v /tmp:/tmp -v "$PWD":/app trion/ng-cli-karma ng test
+  frontend-testrunner-local:
+    build:
+      context: ./platform-frontend
+      dockerfile: ./Dockerfile.test
+    ports:
+      - 4200:4200
+    volumes:
+      - /tmp:/tmp
+      - ./platform-frontend:/app/src
+    environment:
+      - DISPLAY=:0
+      - CHROME_BIN=/usr/bin/display-chromium
+    working_dir: /app/src
+    command: bash -c "../node_modules/gulp/bin/gulp.js build
+      && ../node_modules/karma/bin/karma start --watch true --single-run false"
+
+
+  e2e-runner:
+    build:
+      context: .
+      dockerfile: platform-tests/protractor/Dockerfile
+    shm_size: 1g
+    environment:
+      - DISPLAY=:1
+    links:
+      - frontend:frontend
+
+  e2e-runner-dev:
+    build:
+      context: .
+      dockerfile: platform-tests/protractor/Dockerfile
+    shm_size: 1g
+    environment:
+      - DISPLAY=:1
+    links:
+      - frontend:frontend
+    volumes:
+      - ./platform-tests/protractor/:/project
+      - ./reports:/tmp/reports
+
+#  casper-runner:
+#    build: ./platform-tests/casper
+#    environment:
+#      - FRONTEND_IP=frontend
+#    volumes:
+#      - ./platform-tests/casper:/home/casperjs-tests
+##    entrypoint: pwd
+#    command: bash -c "casperjs test /home/casperjs-tests/*.js --xunit=ftestsreport.xml --log-level=debug;"
+
+#  pip-installer:
+#    build: ./
+#    entrypoint: /usr/src/app/pip-installer.sh
+#
+#  web-manage.prod:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile.admin
+#    env_file: .env-prod
+#    entrypoint: python /usr/src/app/manage.py
+#
+#  web-manage.local:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile.admin
+##    links:
+##      - postgres:postgres
+#    volumes:
+#      - ./:/usr/src/app/
+#    entrypoint: python /usr/src/app/manage.py

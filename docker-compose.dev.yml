@@ -1,0 +1,49 @@
+# compose file for overriding general docker-compose.yml for development purpose
+version: '2'
+services:
+  backend:
+    restart: always
+    image: mojofy_backend
+    volumes:
+      - ./MoJoFy:/app/src
+    environment:
+      - LOCAL_CLOUD_STORAGE_HOST=http://local_cloud_storage # set up an entry in your /etc/hosts
+      - FRONTEND_URL=http://localhost:8080
+      - ELASTIC_USER=elastic  # Default elastic user
+      - ELASTIC_PASS=changeme # Default elastic pass
+    env_file: .env_backend.dev
+    command: npm run-script dev
+#    command: node -e 'console.log(process.env);'
+
+  frontend:
+    restart: always
+    build:
+      context: ./platform-frontend
+      args:
+        - NODE_ENV=development
+        - BACKEND_API_URL=http://backend:3000
+        - FRONTEND_HOST=0.0.0.0
+        - FRONTEND_PORT=8080
+        - FLAVOUR # set the flavour in your environment
+    image: mojofy_frontend
+    ports:
+      - "35729:35729" # livereload
+    volumes:
+      - ./platform-frontend:/app/src
+    environment:
+      - BACKEND_API_URL=http://backend:3000 # set up an entry in your /etc/hosts
+#    env_file: .env_frontend.dev
+    command: npm run-script dev
+
+  # "Usage docker-compose -f ... run --rm frontend-gulp-runner [gulptask]"
+  frontend-gulp-runner:
+    build: ./platform-frontend
+    image: mojofy_frontend
+    volumes:
+      - ./platform-frontend:/app/src
+    working_dir: /app
+    environment:
+      - BACKEND_API_URL=http://backend:3000 # set up an entry in your /etc/hosts
+#    env_file: .env_frontend.dev
+    entrypoint: node_modules/gulp/bin/gulp.js --gulpfile /app/src/gulpfile.js
+    command: "build"

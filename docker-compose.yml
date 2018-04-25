@@ -1,0 +1,96 @@
+version: '2'
+services:
+  backend:
+    restart: always
+    build: ./MoJoFy
+    image: mojofy_backend:${BACKEND_TAG}
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+    environment:
+      - NODE_ENV=production
+      - BACKEND_WINSTON_LOG_LEVEL=info
+      - BACKEND_CLOUD_STORAGE_TYPE=gcloud
+      - ELASTIC_INDEX=test
+      - ELASTIC_HOST=elasticsearch
+      - ELASTIC_PORT=9200
+      - ELASTIC_LOG=debug
+#      - PORT
+#      - JWT_SECRET
+#      - JWT_ISSUER
+#      - JWT_TOKEN_EXPIRATION
+#      - SENDGRID_API_KEY
+#      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER
+#      - BACKEND_EMAIL_NOTIFICATIONS_SENDER
+#      - BACKEND_DATASTORE_NAMESPACE
+#      - BACKEND_GOOGLE_CLOUD_PROJECT_ID
+#      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
+#      - BACKEND_GCLOUD_STORAGE_BUCKET
+#      - ELASTIC_USER
+#      - ELASTIC_PASS
+#      - FLAVOUR
+    env_file: .env_backend.prod
+    command: npm start
+
+  elasticsearch:
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile: 65536
+    mem_limit: 1g
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # TODO: check appropiate limmits here
+#    env_file: .env_elastic.prod
+
+
+  frontend: # TODO: in production mode, we'll want just to build frontend and serve files using nginx or similar
+    restart: always
+    build:
+      context: ./platform-frontend
+      args:
+        - NODE_ENV=production
+#        - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+        - FRONTEND_HOST=0.0.0.0
+        - FRONTEND_PORT=8080
+        - FLAVOUR
+    image: mojofy_frontend:${FRONTEND_TAG}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=production
+      - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+      - FRONTEND_HOST=0.0.0.0
+      - FRONTEND_PORT=8080
+      - FLAVOUR
+#    env_file: .env_frontend.prod
+    command: npm start
+
+# TODO: for frontent production deployment
+#  nginx:
+#    restart: always
+#    build: ./nginx/
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - /www/static
+#    volumes_from:
+#      - web
+#    links:
+#      - web:web
+
+volumes:
+  esdata1:
+    driver: local
