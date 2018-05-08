@@ -11,6 +11,7 @@ services:
     environment:
       - NODE_ENV=production
       - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
+      - MAX_PROFILE_UPLOAD_BYTE_SIZE=1500000
       - BACKEND_WINSTON_LOG_LEVEL=info
       - BACKEND_CLOUD_STORAGE_TYPE=gcloud
       - ELASTIC_INDEX=test
