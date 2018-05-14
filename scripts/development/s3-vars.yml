@@ -1,0 +1,9 @@
+version: '2'
+services:
+  backend:
+    environment:
+      - AWS_ACCESS_KEY=AKIAJZUXYRZ4TZZ2OGTA
+      - AWS_SECRET=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
+      - AWS_REGION=us-east-1
+      - AWS_S3_BUCKET=videona-videos
+      - BACKEND_CLOUD_STORAGE_TYPE=aws
