@@ -98,7 +98,7 @@ services:
     links:
       - elasticsearch
       - datastore-test
-    entrypoint: node_modules/mocha/bin/mocha --recursive
+    entrypoint: node_modules/mocha/bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./src/report/test_results.xml --recursive
     command: src/test/
 
   datastore-test:
