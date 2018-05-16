@@ -35,6 +35,10 @@ services:
 #      - ELASTIC_USER
 #      - ELASTIC_PASS
 #      - FLAVOUR
+#      - AWS_ACCESS_KEY
+#      - STORAGE_ACCESS_ID
+#      - STORAGE_BUCKET
+#      - STORAGE_KEY
     env_file: .env_backend.prod
     command: npm start
 
