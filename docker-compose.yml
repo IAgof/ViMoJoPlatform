@@ -16,6 +16,7 @@ services:
       - ELASTIC_HOST=elasticsearch
       - ELASTIC_PORT=9200
       - ELASTIC_LOG=debug
+#      - BACKEND_PERSISTENT_DB
 #      - PORT
 #      - JWT_SECRET
 #      - JWT_ISSUER
