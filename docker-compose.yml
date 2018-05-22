@@ -10,6 +10,8 @@ services:
       - elasticsearch
     environment:
       - NODE_ENV=production
+      - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
+      - MAX_PROFILE_UPLOAD_BYTE_SIZE=1500000
       - BACKEND_WINSTON_LOG_LEVEL=info
       - BACKEND_CLOUD_STORAGE_TYPE=gcloud
       - ELASTIC_INDEX=test
@@ -65,6 +67,8 @@ services:
 #        - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
         - FRONTEND_HOST=0.0.0.0
         - FRONTEND_PORT=8080
+        - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
+        - GMAPS_API_KEY=GmapsapiKey
         - FLAVOUR
     image: mojofy_frontend:${FRONTEND_TAG}
     ports:
@@ -76,6 +80,7 @@ services:
       - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
       - FRONTEND_HOST=0.0.0.0
       - FRONTEND_PORT=8080
+      - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
       - FLAVOUR
 #    env_file: .env_frontend.prod
     command: npm start
