@@ -1,6 +1,6 @@
 [submodule "MoJoFy"]
 	path = MoJoFy
-	url = git@github.com:IAgof/MoJoFy.git
+url=https://github.com/IAgof/MoJoFy.git
 [submodule "platform-frontend"]
 	path = platform-frontend
-	url = git@github.com:Videona/platform-frontend.git
+url=https://github.com/Videona/platform-frontend.git

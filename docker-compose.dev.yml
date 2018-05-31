@@ -11,6 +11,7 @@ services:
       - FRONTEND_URL=http://localhost:8080
       - ELASTIC_USER=elastic  # Default elastic user
       - ELASTIC_PASS=changeme # Default elastic pass
+      - BACKEND_PERSISTENT_DB=datastore
     env_file: .env_backend.dev
     command: npm run-script dev
 #    command: node -e 'console.log(process.env);'
