@@ -27,6 +27,7 @@ services:
 #      - BACKEND_EMAIL_NOTIFICATIONS_SENDER=${EMAIL_NOTIFICATIONS_SENDER}
 #      - SENDGRID_API_KEY
 #      - FLAVOUR=vimojo
+#      - BACKEND_PERSISTENT_DB=dynamo
     env_file: .env_backend.ovr
     command: npm start
 #    command: node -e 'console.log(process.env);'
