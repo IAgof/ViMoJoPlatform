@@ -13,11 +13,11 @@ services:
       - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
       - MAX_PROFILE_UPLOAD_BYTE_SIZE=1500000
       - BACKEND_WINSTON_LOG_LEVEL=info
-      - BACKEND_CLOUD_STORAGE_TYPE=gcloud
       - ELASTIC_INDEX=test
       - ELASTIC_HOST=elasticsearch
       - ELASTIC_PORT=9200
       - ELASTIC_LOG=debug
+#      - BACKEND_CLOUD_STORAGE_TYPE
 #      - PORT
 #      - JWT_SECRET
 #      - JWT_ISSUER
@@ -29,9 +29,16 @@ services:
 #      - BACKEND_GOOGLE_CLOUD_PROJECT_ID
 #      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
 #      - BACKEND_GCLOUD_STORAGE_BUCKET
+#      - AWS_KEY
+#      - AWS_SECRET
+#      - AWS_REGION
 #      - ELASTIC_USER
 #      - ELASTIC_PASS
 #      - FLAVOUR
+#      - AWS_ACCESS_KEY
+#      - STORAGE_ACCESS_ID
+#      - STORAGE_BUCKET
+#      - STORAGE_KEY
     env_file: .env_backend.prod
     command: npm start
 
