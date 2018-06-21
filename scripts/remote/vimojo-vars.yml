@@ -1,0 +1,53 @@
+version: '2'
+services:
+  backend:
+    environment:
+      - NODE_ENV=production
+      - BACKEND_WINSTON_LOG_LEVEL=info
+      - ELASTIC_INDEX=test
+      - ELASTIC_HOST=elasticsearch
+      - ELASTIC_PORT=9200
+      - ELASTIC_LOG=debug
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASS=changeme
+      - PORT=3000
+      - JWT_SECRET=m4n$ecR1tsd
+      - JWT_ISSUER=vimojo
+      - JWT_TOKEN_EXPIRATION=1y
+      - SENDGRID_API_KEY=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
+      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER=pablofm@videona.com
+      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER=info@videona.com
+      - BACKEND_DATASTORE_NAMESPACE=VIMOJO
+#      - BACKEND_GOOGLE_CLOUD_PROJECT_ID=vimojo-plat
+#      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
+#      - BACKEND_GCLOUD_STORAGE_BUCKET
+      - FLAVOUR=vimojo
+#      - STORAGE_KEY=./flavour/vimojo/cloud-storage-key.pem
+#      - STORAGE_ACCESS_ID=bigboss@vimojo-186017.iam.gserviceaccount.com
+      - AWS_ACCESS_KEY=AKIAIMNHKSCZ3AVWM2BQ
+      - AWS_SECRET=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
+      - AWS_REGION=us-east-1
+      - CDN_PATH=dexqog0f9cslu.cloudfront.net
+      - BACKEND_PERSISTENT_DB=dynamo
+      - BACKEND_SEARCH_DB=elasticsearch
+      - DB_TABLE_PREFIX=vimojo_prod_
+      - BACKEND_CLOUD_STORAGE_TYPE=aws
+      - STORAGE_BUCKET=platform.vimojo.co
+
+  frontend:
+    build:
+      context: ./platform-frontend
+      args:
+        - NODE_ENV=development
+        - BACKEND_API_URL=https://platform.vimojo.co/api/v1
+        - FRONTEND_HOST=0.0.0.0
+        - FRONTEND_PORT=8080
+        - FLAVOUR=vimojo
+        - GMAPS_API_KEY=AIzaSyCSyWF1Lp-qYqQ9lgFEOxV7-5aQq-wfPGY
+    environment:
+      - NODE_ENV=development
+      - BACKEND_API_URL=https://platform.vimojo.co/api/v1
+      - FRONTEND_HOST=0.0.0.0
+      - FRONTEND_PORT=8080
+      - FLAVOUR=vimojo
+      - GMAPS_API_KEY=AIzaSyCSyWF1Lp-qYqQ9lgFEOxV7-5aQq-wfPGY

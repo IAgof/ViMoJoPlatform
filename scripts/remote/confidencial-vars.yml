@@ -1,0 +1,53 @@
+version: '2'
+services:
+  backend:
+    environment:
+      - NODE_ENV=production
+      - BACKEND_WINSTON_LOG_LEVEL=info
+      - ELASTIC_INDEX=test
+      - ELASTIC_HOST=elasticsearch
+      - ELASTIC_PORT=9200
+      - ELASTIC_LOG=debug
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASS=changeme
+      - PORT=3000
+      - JWT_SECRET=confi$ecR1tsd
+      - JWT_ISSUER=elconfi
+      - JWT_TOKEN_EXPIRATION=1y
+      - SENDGRID_API_KEY=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
+      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER=pablofm@videona.com
+      - BACKEND_EMAIL_NOTIFICATIONS_SENDER=info@videona.com
+      - BACKEND_DATASTORE_NAMESPACE=CONFI_DEV
+#      - BACKEND_GOOGLE_CLOUD_PROJECT_ID=confi-plat
+#      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
+#      - BACKEND_GCLOUD_STORAGE_BUCKET
+      - FLAVOUR=confidencial
+#      - STORAGE_KEY=./flavour/confidencial/cloud-storage-key.pem
+#      - STORAGE_ACCESS_ID=account@proj-id.iam.gserviceaccount.com
+      - AWS_ACCESS_KEY=AKIAISMZBMY3JJOG6DCA
+      - AWS_SECRET=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
+      - AWS_REGION=us-east-1
+      - CDN_PATH=d3on8mc67f6lho.cloudfront.net
+      - BACKEND_PERSISTENT_DB=dynamo
+      - BACKEND_SEARCH_DB=elasticsearch
+      - DB_TABLE_PREFIX=confi_staging_
+      - BACKEND_CLOUD_STORAGE_TYPE=aws
+      - STORAGE_BUCKET=confi.beta.files
+
+  frontend:
+    build:
+     context: ./platform-frontend
+     args:
+       - NODE_ENV=development
+       - BACKEND_API_URL=https://elconfidencial.vimojo.co/api/v1
+       - FRONTEND_HOST=0.0.0.0
+       - FRONTEND_PORT=8080
+       - FLAVOUR=confidencial
+       - GMAPS_API_KEY=AIzaSyCSyWF1Lp-qYqQ9lgFEOxV7-5aQq-wfPGY
+    environment:
+     - NODE_ENV=development
+     - BACKEND_API_URL=https://elconfidencial.vimojo.co/api/v1
+     - FRONTEND_HOST=0.0.0.0
+     - FRONTEND_PORT=8080
+     - FLAVOUR=confidencial
+     - GMAPS_API_KEY=AIzaSyCSyWF1Lp-qYqQ9lgFEOxV7-5aQq-wfPGY
