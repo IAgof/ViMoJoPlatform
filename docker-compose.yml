@@ -71,7 +71,7 @@ services:
       context: ./platform-frontend
       args:
         - NODE_ENV=production
-#        - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+        - BACKEND_API_URL=https://${DOCKER_MACHINE_IP}/api/v1
         - FRONTEND_HOST=0.0.0.0
         - FRONTEND_PORT=8080
         - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
@@ -84,7 +84,7 @@ services:
       - backend
     environment:
       - NODE_ENV=production
-      - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
+      - BACKEND_API_URL=https://${DOCKER_MACHINE_IP}/api/v1
       - FRONTEND_HOST=0.0.0.0
       - FRONTEND_PORT=8080
       - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
@@ -92,19 +92,23 @@ services:
 #    env_file: .env_frontend.prod
     command: npm start
 
-# TODO: for frontent production deployment
-#  nginx:
-#    restart: always
-#    build: ./nginx/
-#    ports:
-#      - "80:80"
-#    volumes:
-#      - /www/static
-#    volumes_from:
-#      - web
-#    links:
-#      - web:web
+  front_proxy:
+    restart: always
+    build: ./front-proxy/
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/letsencrypt
+      - certs-data:/data/letsencrypt
+      - video-uploads:/app/uploads
 
 volumes:
   esdata1:
+    driver: local
+  certs:
+    driver: local
+  certs-data:
+    driver: local
+  video-uploads:
     driver: local
