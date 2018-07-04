@@ -7,7 +7,7 @@ services:
     volumes:
       - ./MoJoFy:/app/src
     environment:
-      - LOCAL_CLOUD_STORAGE_HOST=http://local_cloud_storage # set up an entry in your /etc/hosts
+      - LOCAL_CLOUD_STORAGE_HOST=http://front_proxy # set up an entry in your /etc/hosts
       - FRONTEND_URL=http://localhost:8080
       - ELASTIC_USER=elastic  # Default elastic user
       - ELASTIC_PASS=changeme # Default elastic pass
