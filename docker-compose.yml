@@ -44,6 +44,7 @@ services:
 # Auth0 config
 #      - JWT_ISSUER
 #      - AUTH0_AUDIENCE
+#      - AUTH0_METADATA_NS
 
     env_file: .env_backend.prod
     command: npm start
@@ -87,6 +88,7 @@ services:
 #        - AUTH0_AUDIENCE
 #        - AUTH0_REDIRECT_URI
 #        - AUTH0_SCOPE
+#        - AUTH0_METADATA_NS
 
     image: mojofy_frontend:${FRONTEND_TAG}
     ports:
@@ -106,6 +108,7 @@ services:
 #      - AUTH0_AUDIENCE
 #      - AUTH0_REDIRECT_URI
 #      - AUTH0_SCOPE
+#      - AUTH0_METADATA_NS
 #    env_file: .env_frontend.prod
     command: npm start
 
