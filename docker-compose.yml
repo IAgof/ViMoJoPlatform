@@ -45,6 +45,7 @@ services:
 #      - JWT_ISSUER
 #      - AUTH0_AUDIENCE
 #      - AUTH0_METADATA_NS
+#      - AUTH0_BASE_URI
 
     env_file: .env_backend.prod
     command: npm start
