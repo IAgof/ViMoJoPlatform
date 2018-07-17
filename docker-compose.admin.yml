@@ -111,6 +111,7 @@ services:
     # we don't want persistence here
 #    volumes:
 #      - datastore-test-data:/opt/data
+    command: --consistency=1.0
     expose:
       - 8081
 
