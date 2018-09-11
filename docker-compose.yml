@@ -41,6 +41,12 @@ services:
 #      - STORAGE_ACCESS_ID
 #      - STORAGE_BUCKET
 #      - STORAGE_KEY
+# Auth0 config
+#      - JWT_ISSUER
+#      - AUTH0_AUDIENCE
+#      - AUTH0_METADATA_NS
+#      - AUTH0_BASE_URI
+
     env_file: .env_backend.prod
     command: npm start
 
@@ -77,6 +83,14 @@ services:
         - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
         - GMAPS_API_KEY=GmapsapiKey
         - FLAVOUR
+        # Auth0
+#        - AUTH0_CLIENT_ID
+#        - AUTH0_DOMAIN
+#        - AUTH0_AUDIENCE
+#        - AUTH0_REDIRECT_URI
+#        - AUTH0_SCOPE
+#        - AUTH0_METADATA_NS
+
     image: mojofy_frontend:${FRONTEND_TAG}
     ports:
       - "8080:8080"
@@ -89,6 +103,13 @@ services:
       - FRONTEND_PORT=8080
       - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
       - FLAVOUR
+        # Auth0
+#      - AUTH0_CLIENT_ID
+#      - AUTH0_DOMAIN
+#      - AUTH0_AUDIENCE
+#      - AUTH0_REDIRECT_URI
+#      - AUTH0_SCOPE
+#      - AUTH0_METADATA_NS
 #    env_file: .env_frontend.prod
     command: npm start
 

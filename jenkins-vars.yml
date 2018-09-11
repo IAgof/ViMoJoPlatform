@@ -2,28 +2,52 @@ version: '2'
 services:
   backend:
     environment:
+      # general
       - NODE_ENV=production
+      - DEBUG=express:*
       - BACKEND_WINSTON_LOG_LEVEL=info
-      - BACKEND_CLOUD_STORAGE_TYPE=gcloud
+      - PORT=3000
+      - FLAVOUR=vimojo
+      - FRONTEND_URL=http://localhost:8080
+      # elastic
+      - BACKEND_SEARCH_DB=elasticsearch
+      - ELASTIC_USER=elastic
+      - ELASTIC_PASS=changeme
       - ELASTIC_INDEX=test
       - ELASTIC_HOST=elasticsearch
       - ELASTIC_PORT=9200
       - ELASTIC_LOG=debug
-      - PORT=3000
+      # Auth
       - JWT_SECRET=jwtsecret
-      - JWT_ISSUER=jwtissuer
+      - JWT_ISSUER=https://vimojo.eu.auth0.com/
       - JWT_TOKEN_EXPIRATION=1y
-#      - SENDGRID_API_KEY
-#      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER
+      - AUTH0_AUDIENCE=https://vimojo.auth/api
+      - AUTH0_METADATA_NS=https://vimojo.co/
+      - AUTH0_BASE_URI=https://vimojo.eu.auth0.com
+      # mail
+#      - SENDGRID_API_KEY=
+      - BACKEND_EMAIL_NOTIFICATIONS_RECEIVER=jliarte@videona.com
       - BACKEND_EMAIL_NOTIFICATIONS_SENDER=info@videona.com
-      - BACKEND_DATASTORE_NAMESPACE=DSNS
+      # google cloud config
       - BACKEND_GOOGLE_CLOUD_PROJECT_ID=vimojo-plat
-#      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
-#      - BACKEND_GCLOUD_STORAGE_BUCKET
-      - ELASTIC_USER=elastic
-      - ELASTIC_PASS=changeme
-      - FLAVOUR=vimojo
-
+  #      - BACKEND_GCLOUD_STORAGE_ACCESS_ID
+  #      - BACKEND_GCLOUD_STORAGE_BUCKET
+      # AWS variables
+#      - AWS_ACCESS_KEY=
+#      - AWS_SECRET=
+      - AWS_REGION=us-east-1
+      - CDN_PATH=d2ggm04h8ck89b.cloudfront.net
+      - DB_TABLE_PREFIX=vimojo_test_
+      # database
+      - BACKEND_PERSISTENT_DB=datastore
+      - DATASTORE_EMULATOR_HOST=http://datastore:8081
+      - BACKEND_DATASTORE_NAMESPACE=DSNS
+      # storage
+      - BACKEND_CLOUD_STORAGE_TYPE=gcloud
+      - LOCAL_CLOUD_STORAGE_HOST=http://local_cloud_storage
+      - STORAGE_BUCKET=vimojo.test.files
+      - MAX_PROFILE_UPLOAD_BYTE_SIZE=1500000
+      - MAX_VIDEO_UPLOAD_BYTE_SIZE=1500000
 
   frontend:
     build:
@@ -34,9 +58,31 @@ services:
         - FRONTEND_HOST=0.0.0.0
         - FRONTEND_PORT=8080
         - FLAVOUR=vimojo
+        # Auth0
+        - AUTH0_CLIENT_ID=cW8vMXvlI3h0Niz2K50IZv5z5dL4m16b
+        - AUTH0_DOMAIN=vimojo.eu.auth0.com
+        - AUTH0_AUDIENCE=https://vimojo.auth/api
+        - AUTH0_REDIRECT_URI=http://frontend/authcallback
+        - AUTH0_SCOPE=openid offline_access profile email
+        - AUTH0_METADATA_NS=https://vimojo.co/
     environment:
       - NODE_ENV=development
       - BACKEND_API_URL=http://${DOCKER_MACHINE_IP}:3000
       - FRONTEND_HOST=0.0.0.0
       - FRONTEND_PORT=8080
       - FLAVOUR=vimojo
+      # Auth0
+      - AUTH0_CLIENT_ID=cW8vMXvlI3h0Niz2K50IZv5z5dL4m16b
+      - AUTH0_DOMAIN=vimojo.eu.auth0.com
+      - AUTH0_AUDIENCE=https://vimojo.auth/api
+      - AUTH0_REDIRECT_URI=http://frontend/authcallback
+      - AUTH0_SCOPE=openid offline_access profile email
+      - AUTH0_METADATA_NS=https://vimojo.co/
+
+  e2e-runner:
+    environment:
+      - AUTH0_BASE_URI=https://vimojo.eu.auth0.com
+
+  e2e-runner-dev:
+    environment:
+      - AUTH0_BASE_URI=https://vimojo.eu.auth0.com
