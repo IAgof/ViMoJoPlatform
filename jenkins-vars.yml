@@ -78,3 +78,11 @@ services:
       - AUTH0_REDIRECT_URI=http://frontend/authcallback
       - AUTH0_SCOPE=openid offline_access profile email
       - AUTH0_METADATA_NS=https://vimojo.co/
+
+  e2e-runner:
+    environment:
+      - AUTH0_BASE_URI=https://vimojo.eu.auth0.com
+
+  e2e-runner-dev:
+    environment:
+      - AUTH0_BASE_URI=https://vimojo.eu.auth0.com
