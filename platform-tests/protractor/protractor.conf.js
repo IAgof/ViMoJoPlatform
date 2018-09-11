@@ -1,10 +1,10 @@
 "use strict";
 
-let VideoReporter = require('protractor-video-reporter');
-var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
-let Path = require('path');
-let reportsPath = '/tmp/reports/';
-let screenshotReporter = new HtmlScreenshotReporter({
+const VideoReporter = require('protractor-video-reporter');
+const HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
+const Path = require('path');
+const reportsPath = '/tmp/reports/';
+const screenshotReporter = new HtmlScreenshotReporter({
 	dest: Path.join(reportsPath, 'screenshots'),
 	filename: 'platform-e2e-report.html'
 });
