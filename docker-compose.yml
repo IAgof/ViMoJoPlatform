@@ -60,14 +60,15 @@ services:
         soft: -1
         hard: -1
       nofile: 65536
-    mem_limit: 1g
+    mem_limit: 2g
     ports:
       - "9300:9300"
       - "9200:9200"
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # TODO: check appropiate limmits here
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1000m -Xmx1000m" # TODO: check appropiate limmits here
 #    env_file: .env_elastic.prod
 
 

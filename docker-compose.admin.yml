@@ -78,6 +78,7 @@ services:
       - DATASTORE_EMULATOR_HOST=http://datastore-test:8081
       - BACKEND_DATASTORE_NAMESPACE=VIMOJO_DEV
       - BACKEND_GOOGLE_CLOUD_PROJECT_ID=videona-test
+      - BACKEND_SEARCH_DB=fakelasticsearch
 #      - PORT
 #      - JWT_SECRET
 #      - JWT_ISSUER
@@ -93,10 +94,8 @@ services:
 #      - ELASTIC_PASS
 #      - FLAVOUR
     depends_on:
-      - elasticsearch-test
       - datastore-test
     links:
-      - elasticsearch-test
       - datastore-test
     entrypoint: node_modules/mocha/bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./src/report/test_results.xml --recursive
 #    entrypoint: node_modules/mocha/bin/mocha --recursive
